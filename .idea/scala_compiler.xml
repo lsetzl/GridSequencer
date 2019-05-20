@@ -3,7 +3,7 @@
   <component name="ScalaCompilerConfiguration">
     <profile name="sbt 1" modules="scalajsstart">
       <plugins>
-        <plugin path="C:\Users\lsetz\.ivy2\cache\org.scala-js\scalajs-compiler_2.12.8\jars\scalajs-compiler_2.12.8-0.6.27.jar" />
+        <plugin path="C:\Users\Daisuke Matsuoka\.ivy2\cache\org.scala-js\scalajs-compiler_2.12.8\jars\scalajs-compiler_2.12.8-0.6.27.jar" />
       </plugins>
     </profile>
   </component>

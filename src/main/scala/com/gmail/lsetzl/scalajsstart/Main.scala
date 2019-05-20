@@ -1,132 +1,11 @@
 package com.gmail.lsetzl.scalajsstart
 
+import com.gmail.lsetzl.scalajsstart.models._
 import scalatags.JsDom.all._
 import org.scalajs.dom
 
-case class Tick(value: Int) extends Ordered[Tick] {
-  def toDuration: Duration = Duration(value)
-
-  def +(a: Duration): Tick = Tick(value + a.value)
-
-  def -(a: Duration): Tick = Tick(value - a.value)
-
-  def -(a: Tick): Duration = Duration(value - a.value)
-
-  override def compare(that: Tick): Int = value - that.value
-}
-
-case class Duration(value: Int) extends Ordered[Duration] {
-  def toTick: Tick = Tick(value)
-
-  def +(a: Duration): Duration = Duration(value + a.value)
-
-  def -(a: Duration): Duration = Duration(value - a.value)
-
-  def abs: Duration = Duration(value.abs)
-
-  override def compare(that: Duration): Int = value - that.value
-}
-
-case class TickRange(tick: Tick, duration: Duration) {
-  def +(a: Duration): TickRange = copy(tick = tick + a)
-
-  def -(a: Duration): TickRange = copy(tick = tick - a)
-
-  def extend(a: Duration): TickRange = copy(duration = duration + a)
-
-  def shrink(a: Duration): TickRange = copy(duration = duration - a)
-
-  def next: TickRange = copy(tick = tick + duration)
-
-  def set(a: Duration): TickRange = copy(duration = a)
-}
-
-case class Index(value: Int) extends Ordered[Index] {
-  def toLength: Length = Length(value)
-
-  def +(a: Length): Index = Index(value + a.value)
-
-  def -(a: Length): Index = Index(value - a.value)
-
-  def -(a: Index): Length = Length(value - a.value)
-
-  override def compare(that: Index): Int = value - that.value
-}
-
-case class Length(value: Int) extends Ordered[Length] {
-  override def compare(that: Length): Int = value - that.value
-
-  def +(a: Length): Length = Length(value + a.value)
-
-  def -(a: Length): Length = Length(value - a.value)
-}
-
-case class TrackIndexRange(index: Index, length: Length) {
-  val end: Index = index + length - Length(1)
-
-  def +(a: Length): TrackIndexRange = copy(index = index + a)
-
-  def -(a: Length): TrackIndexRange = copy(index = index - a)
-
-  def extend(a: Length): TrackIndexRange = copy(length = length + a)
-
-  def shrink(a: Length): TrackIndexRange = copy(length = length - a)
-
-  def next: TrackIndexRange = copy(index = index + length)
-
-  def set(a: Length): TrackIndexRange = copy(length = a)
-}
-
-case class Point(tick: Tick, index: Index) {
-  def +(a: Duration): Point = copy(tick = tick + a)
-  def -(a: Duration): Point = copy(tick = List(tick - a, Tick(0)).max)
-  def +(a: Length): Point = copy(index = index + a)
-  def -(a: Length): Point = copy(index = List(index - a, Index(0)).max)
-}
-
-case class Selection(a: Point, b: Point, resolution: Duration) {
-  val points: List[Point] = List(a, b)
-  val ticks: List[Tick] = points.map(_.tick)
-  val indexes: List[Index] = points.map(_.index)
-
-  def tickRange: TickRange = TickRange(ticks.min, ticks.max - ticks.min + resolution)
-
-  def trackIndexRange: TrackIndexRange = TrackIndexRange(indexes.min, indexes.max - indexes.min + Length(1))
-}
-
-case class ViewRange(tickRange: TickRange, trackIndexRange: TrackIndexRange)
-
-case class Value(value: Int)
-
-case class ValueRange(start: Value, end: Value)
-
-case class Event(tickRange: TickRange, valueRange: ValueRange)
-
-case class Events(list: Seq[Event]) {
-  def +(a: Event): Events = Events(list = list :+ a)
-}
-
-trait EventType
-
-object EventType {
-  type T = EventType
-
-  case object Note extends T
-
-  case object Velocity extends T
-
-  case object Volume extends T
-
-  case object Tempo extends T
-}
-
-case class Track(channel: Int, eventType: EventType, events: Seq[Event])
-
-case class Tracks(tracks: Seq[Track])
-
-
 object Main extends App {
-  var cursor: Point = Point(Tick(0), Index(0))
+  var cursor: Point = Point(Tick(0), TrackIndex(0))
   var selectionStart: Option[Point] = None
   var resolution: Duration = Duration(16)
   var events: Events = Events(Nil)
@@ -150,7 +29,7 @@ object Main extends App {
       case 40 => cursor = cursor + Length(1)
       case 67 => events = events + Event(selection.tickRange, ValueRange(Value(0), Value(0)))
     }
-    drawGrid(context, ViewRange(TickRange(Tick(0), Duration(48 * 8)), TrackIndexRange(Index(0), Length(16))))
+    drawGrid(context, ViewRange(TickRange(Tick(0), Duration(48 * 8)), TrackIndexRange(TrackIndex(0), Length(16))))
     drawSelection(context, selection)
   }
 
@@ -182,7 +61,7 @@ object Main extends App {
     )
   }
 
-  drawGrid(context, ViewRange(TickRange(Tick(0), Duration(48 * 8)), TrackIndexRange(Index(0), Length(16))))
+  drawGrid(context, ViewRange(TickRange(Tick(0), Duration(48 * 8)), TrackIndexRange(TrackIndex(0), Length(16))))
   drawSelection(context, selection)
 
   dom.document.body.appendChild(mainScreen)
