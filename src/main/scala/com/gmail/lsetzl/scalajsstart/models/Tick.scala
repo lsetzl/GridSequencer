@@ -9,5 +9,7 @@ case class Tick(value: Int) extends Ordered[Tick] {
 
   def -(a: Tick): Duration = Duration(value - a.value)
 
+  def zeroCut: Tick = Tick(List(value, 0).max)
+
   override def compare(that: Tick): Int = value - that.value
 }

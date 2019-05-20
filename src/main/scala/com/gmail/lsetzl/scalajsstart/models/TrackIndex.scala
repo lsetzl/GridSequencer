@@ -9,5 +9,7 @@ case class TrackIndex(value: Int) extends Ordered[TrackIndex] {
 
   def -(a: TrackIndex): Length = Length(value - a.value)
 
+  def zeroCut: TrackIndex = TrackIndex(List(value, 0).max)
+
   override def compare(that: TrackIndex): Int = value - that.value
 }

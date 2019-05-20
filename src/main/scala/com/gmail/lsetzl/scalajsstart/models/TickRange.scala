@@ -13,3 +13,10 @@ case class TickRange(tick: Tick, duration: Duration) {
 
   def set(a: Duration): TickRange = copy(duration = a)
 }
+
+object TickRange {
+  def apply(a: Tick, b: Tick, resolution: Duration): TickRange = {
+    val ticks: Seq[Tick] = List(a, b)
+    TickRange(ticks.min, ticks.max - ticks.min + resolution)
+  }
+}

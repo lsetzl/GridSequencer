@@ -5,12 +5,7 @@ import scalatags.JsDom.all._
 import org.scalajs.dom
 
 object Main extends App {
-  var cursor: Point = Point(Tick(0), TrackIndex(0))
-  var selectionStart: Option[Point] = None
-  var resolution: Duration = Duration(16)
-  var events: Events = Events(Nil)
-
-  def selection: Selection = Selection(cursor, selectionStart.getOrElse(cursor), resolution)
+  var song: Song = Song()
 
   val mainCanvas: dom.html.Canvas = canvas().render
   mainCanvas.width = 1000
@@ -19,21 +14,22 @@ object Main extends App {
   val mainScreen: dom.html.Div = div(mainCanvas).render
 
   dom.document.onkeydown = (e: dom.KeyboardEvent) => {
-    if (e.shiftKey && selectionStart.isEmpty) selectionStart = Some(cursor)
-    if (!e.shiftKey && List(37, 38, 39, 40).contains(e.keyCode)) selectionStart = None
+    if (e.shiftKey && !song.isSelecting) song = song.startSelect
+    if (e.keyCode == 243 || !e.shiftKey && List(37, 39).contains(e.keyCode)) song = song.clearSelect
 
     e.keyCode match {
-      case 37 => cursor = cursor - resolution
-      case 38 => cursor = cursor - Length(1)
-      case 39 => cursor = cursor + resolution
-      case 40 => cursor = cursor + Length(1)
-      case 67 => events = events + Event(selection.tickRange, ValueRange(Value(0), Value(0)))
+      case 37 => song = song.cursorToLeft
+      case 38 => song = song.cursorToUp
+      case 39 => song = song.cursorToRight
+      case 40 => song = song.cursorToDown
+      case 67 => song = song.addEvent(Value(0))
     }
-    drawGrid(context, ViewRange(TickRange(Tick(0), Duration(48 * 8)), TrackIndexRange(TrackIndex(0), Length(16))))
-    drawSelection(context, selection)
+
+    drawGrid(context, song.view)
+    drawSelection(context, song.se)
   }
 
-  def drawGrid(c: dom.CanvasRenderingContext2D, vr: ViewRange): Unit = {
+  def drawGrid(c: dom.CanvasRenderingContext2D, v: View): Unit = {
     c.fillStyle = "black"
     c.fillRect(0, 0, 1000, 500)
 
@@ -45,7 +41,7 @@ object Main extends App {
     }
   }
 
-  def draw(viewRange: ViewRange, tracks: Tracks): Unit = {
+  def draw(viewRange: View, tracks: Tracks): Unit = {
 
   }
 
@@ -61,7 +57,7 @@ object Main extends App {
     )
   }
 
-  drawGrid(context, ViewRange(TickRange(Tick(0), Duration(48 * 8)), TrackIndexRange(TrackIndex(0), Length(16))))
+  drawGrid(context, View(TickRange(Tick(0), Duration(48 * 8)), TrackIndexRange(TrackIndex(0), Length(16))))
   drawSelection(context, selection)
 
   dom.document.body.appendChild(mainScreen)

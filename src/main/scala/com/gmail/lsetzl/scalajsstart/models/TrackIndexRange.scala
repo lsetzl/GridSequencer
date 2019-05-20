@@ -14,4 +14,13 @@ case class TrackIndexRange(index: TrackIndex, length: Length) {
   def next: TrackIndexRange = copy(index = index + length)
 
   def set(a: Length): TrackIndexRange = copy(length = a)
+
+  def indexes: Seq[TrackIndex] = (1 to length.value).map(index + Length(_))
+}
+
+object TrackIndexRange {
+  def apply(a: TrackIndex, b: TrackIndex): TrackIndexRange = {
+    val trackIndexes: Seq[TrackIndex] = List(a, b)
+    TrackIndexRange(trackIndexes.min, trackIndexes.max - trackIndexes.min + Length(1))
+  }
 }
