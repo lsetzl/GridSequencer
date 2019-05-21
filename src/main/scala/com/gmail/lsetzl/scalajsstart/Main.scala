@@ -26,10 +26,14 @@ object Main extends App {
     }
 
     drawGrid(context, song.view)
-    drawSelection(context, song.se)
+    drawSelection(context, song.selection)
   }
 
-  def drawGrid(c: dom.CanvasRenderingContext2D, v: View): Unit = {
+  def toX(view: Selection, resolution: Duration, tick: Tick): Int = {
+    (tick - view.tickRange.tick) * 16 / resolution
+  }
+
+  def drawGrid(c: dom.CanvasRenderingContext2D, view: Selection): Unit = {
     c.fillStyle = "black"
     c.fillRect(0, 0, 1000, 500)
 
@@ -41,8 +45,37 @@ object Main extends App {
     }
   }
 
-  def draw(viewRange: View, tracks: Tracks): Unit = {
+  def draw(c: dom.CanvasRenderingContext2D, view: Selection,
+           resolution: Duration, channels: Seq[Channel], tracks: Seq[Track], events: Seq[Event]): Unit = {
 
+  }
+
+  def drawChannel(c: dom.CanvasRenderingContext2D, y: Int,
+                  view: Selection, resolution: Duration,
+                  channel: Channel, tracks: Seq[Track], events: Seq[Event]): Unit = {
+
+  }
+
+  def drawTrack(c: dom.CanvasRenderingContext2D, y: Int,
+                view: Selection, resolution: Duration,
+                track: Track, events: Seq[Event]): Unit = {
+
+  }
+
+  def drawEvent(c: dom.CanvasRenderingContext2D, y: Int,
+                view: Selection, resolution: Duration, trackType: TrackType, event: Event): Unit = {
+    def valueString(value: Value): String = trackType match {
+      case TrackType.Note => List("c", "c+", "d", "e", "f", "f+", "g", "g+", "a", "b-", "b")(value.value)
+      case _ => value.value.toString
+    }
+
+    val x1 = toX(view, resolution, event.tickRange.tick)
+    val x2 = toX(view, resolution, event.tickRange.end)
+    c.lineWidth = 3
+    c.strokeStyle = "white"
+    c.beginPath()
+    context.strokeRect(x1, y, x2, y + 16)
+    c.fillText(valueString(event.valueRange.start) + event.valueRange.end.map("~" + valueString(_)).getOrElse(""), x1, y + 16, x2 - x1)
   }
 
   def drawSelection(c: dom.CanvasRenderingContext2D, selection: Selection): Unit = {

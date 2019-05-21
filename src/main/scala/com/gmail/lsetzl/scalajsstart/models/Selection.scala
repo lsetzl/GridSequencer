@@ -1,9 +1,7 @@
 package com.gmail.lsetzl.scalajsstart.models
 
-import com.gmail.lsetzl.scalajsstart.models
-
 case class Selection(tickRange: TickRange, trackIndexRange: TrackIndexRange) {
-
+  def contains(a: Tick): Boolean = tickRange.contains(a)
 }
 
 object Selection {
@@ -15,8 +13,8 @@ object Selection {
     val points: List[Point] = List(a, b)
     val ticks: List[Tick] = points.map(_.tick)
     val indexes: List[TrackIndex] = points.map(_.trackIndex)
-    def tickRange: TickRange = models.TickRange(ticks.min, ticks.max - ticks.min + resolution)
-    def trackIndexRange: TrackIndexRange = TrackIndexRange(indexes.min, indexes.max - indexes.min + Length(1))
+    def tickRange: TickRange = TickRange(ticks.min, ticks.max, resolution)
+    def trackIndexRange: TrackIndexRange = TrackIndexRange(indexes.min, indexes.max)
     Selection(tickRange, trackIndexRange)
   }
 }
