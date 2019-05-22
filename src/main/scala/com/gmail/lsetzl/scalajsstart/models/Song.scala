@@ -32,7 +32,7 @@ case class Song(cursor: Point, selectionStart: Option[Point], resolution: Durati
 
   def addEvent(value: Value): Song = {
     val trackId: Int = tracks(cursor.trackIndex.value).id
-    copy(events = events :+ Event(trackId, selection.tickRange, ValueRange(value, value)))
+    copy(events = events :+ Event(trackId, selection.tickRange, ValueRange(value)))
   }
 }
 

@@ -71,11 +71,14 @@ object Main extends App {
 
     val x1 = toX(view, resolution, event.tickRange.tick)
     val x2 = toX(view, resolution, event.tickRange.end)
-    c.lineWidth = 3
     c.strokeStyle = "white"
+    c.fillStyle = "white"
+    c.globalAlpha = 0.5
     c.beginPath()
-    context.strokeRect(x1, y, x2, y + 16)
-    c.fillText(valueString(event.valueRange.start) + event.valueRange.end.map("~" + valueString(_)).getOrElse(""), x1, y + 16, x2 - x1)
+    context.fillRect(x1, y, x2, y + 16)
+    c.globalAlpha = 1.0
+    val text: String = valueString(event.valueRange.start) + event.valueRange.end.map("-" + valueString(_)).getOrElse("")
+    c.fillText(text, x1, y + 16, x2 - x1)
   }
 
   def drawSelection(c: dom.CanvasRenderingContext2D, selection: Selection): Unit = {
@@ -90,8 +93,8 @@ object Main extends App {
     )
   }
 
-  drawGrid(context, View(TickRange(Tick(0), Duration(48 * 8)), TrackIndexRange(TrackIndex(0), Length(16))))
-  drawSelection(context, selection)
+  drawGrid(context, song.view)
+  drawSelection(context, song.selection)
 
   dom.document.body.appendChild(mainScreen)
 }
