@@ -1,0 +1,55 @@
+song
+    channels
+        tracks
+            lanes
+                events
+
+move-cursor
+    cursor
+move-cursor-to-next/prev-event
+    ctrl+cursor
+move-cursor-to-next-bar
+    tab
+move-cursor-to-next/prev-channel
+    pageup/pagedown
+move-cursor-to-start/end
+    home/end
+undo/redo
+    ctrl+z/ctrl+shift+z
+select-start/end-value
+    ,
+    ctrl+left/right
+select
+    shift+cursor
+add-channel
+    h
+add-track
+    t
+add-lane
+    l
+delete-*(on lane-blank/event/selection)
+    delete
+move-*(on lane-blank/event/selection)
+    alt+cursor
+set-value(on lane-blank/event/selection)
+    0-9a-g
+copy-*(on lane-blank/event/selection)
+    ctrl+c
+shadow-*
+    ctrl+v
+realise-event(on event)
+    ctrl+r
+extend/shrink-blank/event(on lane-blank/event)
+    space/bs
+up/down-value(on event)
+    [/]
+up/down-large-value(on event)
+    </>
+select-channel-instrument
+    i
+select-lane-type
+    t
+save
+    ctrl+s
+export
+    ctrl+x
